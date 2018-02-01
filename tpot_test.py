@@ -43,9 +43,7 @@ X.fillna(X.mean(), inplace=True)
 
 X = X.values
 
-X_train, X_test, y_train, y_test = train_test_split(X, y,
-                                                    train_size=0.75,
-                                                    test_size=0.25)
+X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.75, test_size=0.25)
 
 # searches best hyperparameters
 # n_jobs = 4 : using four cores (we had an external server)
