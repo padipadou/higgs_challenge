@@ -175,20 +175,17 @@ if __name__ == '__main__':
     pipeline.fit(X_train, y_train)
     X_train = pipeline.transform(X_train)
 
-    # # fix random seed for reproducibility
     # np.random.seed(0)
     #
     # # -- Create model
     # print("Building the model...")
-    # model, architecture_name = create_model()
+    # model, architecture_name = create_model(activation_func='relu',hidden_60x2=1)
     # history = model.fit(X_train, y_train, validation_split=0.2, epochs=40, batch_size=50, verbose=1)
     #
     # # -- Plot
     # # interesting_plots(history)
     #
     # # -- Save the model
-    # with open('models/nn_{}_40_epochs.json'.format(architecture_name), 'w') as f:
-    #     json.dump(model.to_json(), f, ensure_ascii=False)
     # model.save_weights('models/nn_{}_40_epochs.h5'.format(architecture_name))
 
     # -- Load the model
