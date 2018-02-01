@@ -1,4 +1,4 @@
-# Usage of keras models to predict class
+# Usage of keras neural network models to predict class
 #
 # Authors : Paul-Alexis Dray,
 #           Adrian Ahne

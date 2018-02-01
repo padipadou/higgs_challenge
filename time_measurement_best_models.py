@@ -55,7 +55,7 @@ if __name__ == "__main__":
                 ('selector', TypeSelector(np.number)),
                 ('scaler', StandardScaler()),
                 ('selectKbest', SelectKBest(f_regression, k=15)),  # for logistic regression, LDA
-                #            ('selectKbest', SelectKBest(f_regression, k = 'all')), # for decision tree, random forest
+                # ('selectKbest', SelectKBest(f_regression, k = 'all')), # for decision tree, random forest
 
                 # ('debug_bool', Debug()),
             ])),  # numericals close
