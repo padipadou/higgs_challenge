@@ -68,7 +68,7 @@ def load_data(data_path=DATA_PATH):
 def make_pipeline(model=True):
     # -- Choose model to be tested in the pipeline
     model = LogisticRegression(random_state=0)
-    # model = LinearDiscriminantAnalysis(random_state=0)
+    # model = LinearDiscriminantAnalysis()
     # model = DecisionTreeClassifier(random_state=0)
     # model = RandomForestClassifier(random_state=0)
 

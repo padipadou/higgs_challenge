@@ -39,7 +39,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.75, test_
 # -- Searches best hyperparameters with TPOT
 # n_jobs = 4 : using four cores (we had an external server)
 # max_eval_time_mins = 0.5 : evaluates each single pipeline only 30 seconds (if not it takes too much time)
-my_tpot = TPOTClassifier(verbosity=3, max_time_mins=600, cv=5, generations=10, n_jobs=2,
+my_tpot = TPOTClassifier(verbosity=3, max_time_mins=600, cv=5, generations=10, n_jobs=2, random_state=0,
                          max_eval_time_mins=0.5,
                          periodic_checkpoint_folder="./best_models")
 

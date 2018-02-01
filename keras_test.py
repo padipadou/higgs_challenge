@@ -13,6 +13,11 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 import json
 from keras.models import model_from_json
+from sklearn.pipeline import Pipeline, FeatureUnion
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from utility import MissingValues, TypeSelector, StringIndexer, Debug
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import f_regression
 from grid_search_pipeline import load_data, make_pipeline
 from sklearn.model_selection import train_test_split
 from keras.models import Sequential
@@ -48,7 +53,7 @@ def binary_PTA(y_true, y_pred, threshold=keras.variable(value=0.5)):
     return TP / P
 
 
-def create_model(input_dim_=23):
+def create_model(input_dim_=26):
     activation_func = 'relu'
     architecture_name = activation_func
     hidden_60x2 = 0  # hidden layers
@@ -56,27 +61,32 @@ def create_model(input_dim_=23):
     model = Sequential()
 
     model.add(Dense(30, input_dim=input_dim_, kernel_initializer='normal', activation=activation_func))
+    architecture_name += "_30"
 
     if hidden_60x2 >= 1:
         model.add(Dense(60, kernel_initializer='normal', activation=activation_func))
         model.add(Dense(60, kernel_initializer='normal', activation=activation_func))
         model.add(Dense(60, kernel_initializer='normal', activation=activation_func))
         model.add(Dropout(0.5))
+        architecture_name += "_2x60"
 
     if hidden_60x2 == 2:
         model.add(Dense(60, kernel_initializer='normal', activation=activation_func))
         model.add(Dense(60, kernel_initializer='normal', activation=activation_func))
         model.add(Dense(60, kernel_initializer='normal', activation=activation_func))
         model.add(Dropout(0.5))
+        architecture_name += "_2x60"
 
     model.add(Dense(30, input_dim=input_dim_, kernel_initializer='normal', activation=activation_func))
     model.add(Dropout(0.5))
+    architecture_name += "_30"
 
     model.add(Dense(1, kernel_initializer='normal', activation='sigmoid'))
+    architecture_name += "_1"
 
     # Compile model
     model.compile(loss='binary_crossentropy', optimizer="adagrad", metrics=['accuracy', auc])
-    return model
+    return model, architecture_name
 
 
 def interesting_plots(history):
@@ -113,39 +123,74 @@ if __name__ == '__main__':
     print("Load data...")
     X, y = load_data()
 
+    # -- Make pipeline
     print("Building the pipeline...")
-    pipeline = make_pipeline(model=False)
+    pipeline = Pipeline([
+
+        # handle missing values
+        ('missing_values', MissingValues()),
+
+        ('features', FeatureUnion(n_jobs=1, transformer_list=[
+
+            # only for boolean variables (do not exist here, only for completeness)
+            ('boolean', Pipeline([
+                ('selector', TypeSelector('bool')),
+                # ('debug_bool', Debug()),
+            ])),
+
+            # only for numerical values
+            ('numericals', Pipeline([
+                ('selector', TypeSelector(np.number)),
+                ('scaler', StandardScaler()),
+                ('selectKbest', SelectKBest(f_regression, k="all")),
+
+                # ('debug_bool', Debug()),
+            ])),  # numericals close
+
+            # only for categorical values
+            ('categoricals', Pipeline([
+                ('selector', TypeSelector('category')),
+                ('labeler', StringIndexer()),
+                ('encoder', OneHotEncoder(handle_unknown='ignore', sparse=False)),
+                # ('debug_bool', Debug()),
+            ]))
+
+        ])),
+
+    ])
 
     # -- Train-test split
     print("Train test splitting...")
     X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, test_size=0.3, random_state=0)
 
     pipeline.fit(X_train, y_train)
-    pipeline.transform(X_train)
+    X_train = pipeline.transform(X_train)
 
     # fix random seed for reproducibility
-    seed = 7
-    np.random.seed(seed)
+    np.random.seed(0)
 
     # -- Create model
     model, architecture_name = create_model()
-    # print(model.summary())  # Model architecture
-
-    history = model.fit(X, y, validation_split=0.2, epochs=40, batch_size=50, verbose=1)
+    history = model.fit(X_train, y_train, validation_split=0.2, epochs=1, batch_size=100, verbose=1)
 
     # -- Plot
-    interesting_plots(history)
-
-    activation_func = "relu"
-    model_name = activation_func + "_30_30_1"
+    # interesting_plots(history)
 
     # -- Save the model
-    with open('models/nn_{}_40_epochs.json'.format(model_name), 'w') as f:
+    with open('models/nn_{}_40_epochs.json'.format(architecture_name), 'w') as f:
         json.dump(model.to_json(), f, ensure_ascii=False)
-    model.save_weights('models/nn_{}_40_epochs.h5'.format(model_name))
+    model.save_weights('models/nn_{}_40_epochs.h5'.format(architecture_name))
 
     # -- Load the model
-    # Best model: 30-60-60-30-1 Relu activation
+    # Best model: 30-60-60-30-1 Relu activation 40 epochs
+    # model_name = "relu_30_2x60_30_1"
     # with open('models/nn_{}_40_epochs.json'.format(model_name)) as json_string:
     #     model = model_from_json(json_string)
     # model.load_weights('models/nn_{}_40_epochs.h5'.format(model_name))
+    #
+    # pipeline.fit(X_test, y_test)
+    # X_test = pipeline.transform(X_test)
+    #
+    # results = model.evaluate(X_test, y_test)
+    #
+    # print('Accuracy: {} AUC: {}'.format(results[0], results[1]))

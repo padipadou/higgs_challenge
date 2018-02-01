@@ -31,10 +31,10 @@ if __name__ == "__main__":
 
     # -- Best model configurations from grid search
     # WARNING! Change also parameter SelectKBest in pipeline for each model!!
-    model = LogisticRegression(penalty='l2', solver='lbfgs', tol=1e-2)
+    model = LogisticRegression(penalty='l2', solver='lbfgs', tol=1e-2, random_state=0)
     # model = LinearDiscriminantAnalysis(n_components=1, solver='lsqr', tol=1e-2, shrinkage='auto')
-    # model = DecisionTreeClassifier(criterion='entropy', splitter='best', presort=True)
-    # model = RandomForestClassifier(n_estimators=15, criterion='entropy', max_features='auto', oob_score=False)
+    # model = DecisionTreeClassifier(criterion='entropy', splitter='best', presort=True, random_state=0)
+    # model = RandomForestClassifier(n_estimators=15, criterion='entropy', max_features='auto', oob_score=False, random_state=0)
 
     # -- Make pipeline
     pipeline = Pipeline([
