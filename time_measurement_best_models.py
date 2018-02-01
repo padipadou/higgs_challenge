@@ -75,7 +75,7 @@ if __name__ == "__main__":
     ])
 
     # -- Cross validation
-    cv = StratifiedKFold(n_splits=10, shuffle=True)
+    cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=0)
     accuracies = []  # collects accuracies of each fold
     confusion_mat = []  # collects confusion matrix of each fold
 

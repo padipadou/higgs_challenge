@@ -160,7 +160,7 @@ if __name__ == "__main__":
 
     # -- Train-test split
     print("Train test splitting...")
-    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, test_size=0.3)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, test_size=0.3, random_state=0)
 
     print("Building Grid search...")
     # -- AUC score for grid search

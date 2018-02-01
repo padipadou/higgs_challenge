@@ -1,6 +1,18 @@
+# Usage of keras models to predict class
+#
+# Authors : Paul-Alexis Dray,
+#           Adrian Ahne
+# Date : 01-02-2018
+#
+# Information: For testing just uncomment the piece of code you need
+# We put everything in comments to avoid that everything is printed at the same time
+
 import numpy as np
 import keras.backend as keras
 import tensorflow as tf
+import matplotlib.pyplot as plt
+import json
+from keras.models import model_from_json
 from grid_search_pipeline import load_data, make_pipeline
 from sklearn.model_selection import train_test_split
 from keras.models import Sequential
@@ -38,6 +50,7 @@ def binary_PTA(y_true, y_pred, threshold=keras.variable(value=0.5)):
 
 def create_model(input_dim_=23):
     activation_func = 'relu'
+    architecture_name = activation_func
     hidden_60x2 = 0  # hidden layers
 
     model = Sequential()
@@ -66,6 +79,36 @@ def create_model(input_dim_=23):
     return model
 
 
+def interesting_plots(history):
+    fig = plt.figure(figsize=(10, 10))
+    sub1 = fig.add_subplot(221)
+    sub1.set_title('model accuracy')
+    sub1.plot(history.history['acc'])
+    sub1.plot(history.history['val_acc'])
+    sub1.set_ylabel('accuracy')
+    sub1.set_xlabel('epoch')
+    sub1.legend(['train', 'test'], loc='upper left')
+
+    sub1 = fig.add_subplot(222)
+    sub1.set_title('model loss')
+    sub1.plot(history.history['loss'])
+    sub1.plot(history.history['val_loss'])
+    sub1.set_ylabel('loss')
+    sub1.set_xlabel('epoch')
+    sub1.legend(['train', 'test'], loc='upper left')
+
+    sub1 = fig.add_subplot(223)
+    sub1.set_title('model auc')
+    sub1.plot(history.history['auc'])
+    sub1.plot(history.history['val_auc'])
+    sub1.set_ylabel('auc')
+    sub1.set_xlabel('epoch')
+    sub1.legend(['train', 'test'], loc='upper left')
+
+    plt.show()
+    return
+
+
 if __name__ == '__main__':
     print("Load data...")
     X, y = load_data()
@@ -75,7 +118,7 @@ if __name__ == '__main__':
 
     # -- Train-test split
     print("Train test splitting...")
-    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, test_size=0.3)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, test_size=0.3, random_state=0)
 
     pipeline.fit(X_train, y_train)
     pipeline.transform(X_train)
@@ -85,7 +128,24 @@ if __name__ == '__main__':
     np.random.seed(seed)
 
     # -- Create model
-    model = create_model()
-    print(model.summary())
+    model, architecture_name = create_model()
+    # print(model.summary())  # Model architecture
 
-    pass
+    history = model.fit(X, y, validation_split=0.2, epochs=40, batch_size=50, verbose=1)
+
+    # -- Plot
+    interesting_plots(history)
+
+    activation_func = "relu"
+    model_name = activation_func + "_30_30_1"
+
+    # -- Save the model
+    with open('models/nn_{}_40_epochs.json'.format(model_name), 'w') as f:
+        json.dump(model.to_json(), f, ensure_ascii=False)
+    model.save_weights('models/nn_{}_40_epochs.h5'.format(model_name))
+
+    # -- Load the model
+    # Best model: 30-60-60-30-1 Relu activation
+    # with open('models/nn_{}_40_epochs.json'.format(model_name)) as json_string:
+    #     model = model_from_json(json_string)
+    # model.load_weights('models/nn_{}_40_epochs.h5'.format(model_name))
