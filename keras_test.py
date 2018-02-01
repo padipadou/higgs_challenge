@@ -193,7 +193,7 @@ if __name__ == '__main__':
 
     # -- Load the model
     # Best model: 30-60-60-30-1 Relu activation 40 epochs
-    print("Building the model...")
+    print("Loading the model...")
     model, model_name = create_model(activation_func='relu',hidden_60x2=1)
 
     model.load_weights('models/nn_{}_40_epochs.h5'.format(model_name))
