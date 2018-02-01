@@ -48,9 +48,9 @@ Vous pouvez retourner sur votre écran via la commande:
 
 `git pull`
 
-* Si erreur du type : "ImportError: No module named 'web\_scrap\'"
+* Si erreur du type : "ImportError: No module named ..."
 
-`export PYTHONPATH=$PYTHONPATH:/home/dray/Documents/bubo_prod`
+`export PYTHONPATH=$PYTHONPATH:/home/dray/Documents/higgs_challenge`
 
 ### Attention:
 Lors du re-démarrage du server, les écrans et donc les processus  sont perdus.
