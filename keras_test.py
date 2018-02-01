@@ -5,14 +5,12 @@
 # Date : 01-02-2018
 #
 # Information: For testing just uncomment the piece of code you need
-# We put everything in comments to avoid that everything is printed at the same time
+# We put everything in comments to avoid that everything is running  at the same time
 
 import numpy as np
 import keras.backend as keras
 import tensorflow as tf
 import matplotlib.pyplot as plt
-import json
-from keras.models import model_from_json
 from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from utility import MissingValues, TypeSelector, StringIndexer, Debug
@@ -23,8 +21,11 @@ from sklearn.model_selection import train_test_split
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
 
-# AUC for a binary classifier
+
 def auc(y_true, y_pred):
+    """
+    AUC for a binary classifier
+    """
     ptas = tf.stack([binary_PTA(y_true, y_pred, k) for k in np.linspace(0, 1, 1000)], axis=0)
     pfas = tf.stack([binary_PFA(y_true, y_pred, k) for k in np.linspace(0, 1, 1000)], axis=0)
     pfas = tf.concat([tf.ones((1,)), pfas], axis=0)
@@ -33,8 +34,10 @@ def auc(y_true, y_pred):
     return keras.sum(s, axis=0)
 
 
-# PFA, prob false alert for binary classifier
 def binary_PFA(y_true, y_pred, threshold=keras.variable(value=0.5)):
+    """
+    PFA, prob false alert for binary classifier
+    """
     y_pred = keras.cast(y_pred >= threshold, 'float32')
     # N = total number of negative labels
     N = keras.sum(1 - y_true)
@@ -43,8 +46,10 @@ def binary_PFA(y_true, y_pred, threshold=keras.variable(value=0.5)):
     return FP / N
 
 
-# P_TA prob true alerts for binary classifier
 def binary_PTA(y_true, y_pred, threshold=keras.variable(value=0.5)):
+    """
+    P_TA prob true alerts for binary classifier
+    """
     y_pred = keras.cast(y_pred >= threshold, 'float32')
     # P = total number of positive labels
     P = keras.sum(y_true)
@@ -53,10 +58,11 @@ def binary_PTA(y_true, y_pred, threshold=keras.variable(value=0.5)):
     return TP / P
 
 
-def create_model(input_dim_=26):
-    activation_func = 'relu'
+def create_model(input_dim_=26, activation_func='relu', hidden_60x2=0):
+    """
+    Return a keras model with particular spec + architecture_name linked to this model
+    """
     architecture_name = activation_func
-    hidden_60x2 = 0  # hidden layers
 
     model = Sequential()
 
@@ -90,6 +96,9 @@ def create_model(input_dim_=26):
 
 
 def interesting_plots(history):
+    """
+    plot Accuracy, Loss, AUC for val data vs train data
+    """
     fig = plt.figure(figsize=(10, 10))
     sub1 = fig.add_subplot(221)
     sub1.set_title('model accuracy')
@@ -166,31 +175,31 @@ if __name__ == '__main__':
     pipeline.fit(X_train, y_train)
     X_train = pipeline.transform(X_train)
 
-    # fix random seed for reproducibility
-    np.random.seed(0)
-
-    # -- Create model
-    model, architecture_name = create_model()
-    history = model.fit(X_train, y_train, validation_split=0.2, epochs=1, batch_size=100, verbose=1)
-
-    # -- Plot
-    # interesting_plots(history)
-
-    # -- Save the model
-    with open('models/nn_{}_40_epochs.json'.format(architecture_name), 'w') as f:
-        json.dump(model.to_json(), f, ensure_ascii=False)
-    model.save_weights('models/nn_{}_40_epochs.h5'.format(architecture_name))
+    # # fix random seed for reproducibility
+    # np.random.seed(0)
+    #
+    # # -- Create model
+    # print("Building the model...")
+    # model, architecture_name = create_model()
+    # history = model.fit(X_train, y_train, validation_split=0.2, epochs=40, batch_size=50, verbose=1)
+    #
+    # # -- Plot
+    # # interesting_plots(history)
+    #
+    # # -- Save the model
+    # with open('models/nn_{}_40_epochs.json'.format(architecture_name), 'w') as f:
+    #     json.dump(model.to_json(), f, ensure_ascii=False)
+    # model.save_weights('models/nn_{}_40_epochs.h5'.format(architecture_name))
 
     # -- Load the model
     # Best model: 30-60-60-30-1 Relu activation 40 epochs
-    # model_name = "relu_30_2x60_30_1"
-    # with open('models/nn_{}_40_epochs.json'.format(model_name)) as json_string:
-    #     model = model_from_json(json_string)
-    # model.load_weights('models/nn_{}_40_epochs.h5'.format(model_name))
-    #
-    # pipeline.fit(X_test, y_test)
-    # X_test = pipeline.transform(X_test)
-    #
-    # results = model.evaluate(X_test, y_test)
-    #
-    # print('Accuracy: {} AUC: {}'.format(results[0], results[1]))
+    print("Building the model...")
+    model, model_name = create_model(activation_func='relu',hidden_60x2=1)
+
+    model.load_weights('models/nn_{}_40_epochs.h5'.format(model_name))
+
+    X_test = pipeline.transform(X_test)
+
+    results = model.evaluate(X_test, y_test)
+
+    print('Loss: {} Accuracy: {} AUC: {}'.format(results[0], results[1], results[2]))
