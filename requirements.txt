@@ -1,0 +1,8 @@
+matplotlib
+numpy
+keras
+pandas
+tpot
+ipdb
+sklearn
+seaborn

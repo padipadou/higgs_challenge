@@ -14,7 +14,7 @@ import math
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
-from utility import Missing_values, TypeSelector, StringIndexer, Debug
+from utility import MissingValues, TypeSelector, StringIndexer, Debug
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import f_regression
 from sklearn.linear_model import LogisticRegression
@@ -65,7 +65,7 @@ def load_data(data_path=DATA_PATH):
     return X, y
 
 
-def make_pipeline():
+def make_pipeline(model=True):
     # -- Choose model to be tested in the pipeline
     model = LogisticRegression()
     # model = LinearDiscriminantAnalysis()
@@ -73,10 +73,11 @@ def make_pipeline():
     # model = RandomForestClassifier()
 
     # -- Building the pipeline (for all models the same)
-    pipeline = Pipeline([
+    if model:
+        pipeline = Pipeline([
 
         # handle missing values
-        ('missing_values', Missing_values()),
+        ('missing_values', MissingValues()),
 
         ('features', FeatureUnion(n_jobs=1, transformer_list=[
 
@@ -107,6 +108,39 @@ def make_pipeline():
         # model to be applied
         ('model', model)
     ])
+    else:
+        pipeline = Pipeline([
+
+            # handle missing values
+            ('missing_values', MissingValues()),
+
+            ('features', FeatureUnion(n_jobs=1, transformer_list=[
+
+                # only for boolean variables (do not exist here, only for completeness)
+                ('boolean', Pipeline([
+                    ('selector', TypeSelector('bool')),
+                    # ('debug_bool', Debug()),
+                ])),
+
+                # only for numerical values
+                ('numericals', Pipeline([
+                    ('selector', TypeSelector(np.number)),
+                    ('scaler', StandardScaler()),
+                    ('selectKbest', SelectKBest(f_regression)),
+                    # ('debug_bool', Debug()),
+                ])),  # numericals close
+
+                # only for categorical values
+                ('categoricals', Pipeline([
+                    ('selector', TypeSelector('category')),
+                    ('labeler', StringIndexer()),
+                    ('encoder', OneHotEncoder(handle_unknown='ignore', sparse=False)),
+                    # ('debug_bool', Debug()),
+                ]))
+
+            ]))
+
+        ])
 
     return pipeline
 

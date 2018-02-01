@@ -14,7 +14,7 @@ from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.model_selection import StratifiedKFold
 from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
-from utility import Missing_values, TypeSelector, StringIndexer, Debug
+from utility import MissingValues, TypeSelector, StringIndexer, Debug
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import f_regression
 from sklearn.linear_model import LogisticRegression
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     pipeline = Pipeline([
 
         # handle missing values
-        ('missing_values', Missing_values()),
+        ('missing_values', MissingValues()),
 
         ('features', FeatureUnion(n_jobs=1, transformer_list=[
 
