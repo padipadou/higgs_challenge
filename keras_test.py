@@ -72,12 +72,10 @@ def create_model(input_dim_=26, activation_func='relu', hidden_60x2=0):
     if hidden_60x2 >= 1:
         model.add(Dense(60, kernel_initializer='normal', activation=activation_func))
         model.add(Dense(60, kernel_initializer='normal', activation=activation_func))
-        model.add(Dense(60, kernel_initializer='normal', activation=activation_func))
         model.add(Dropout(0.5))
         architecture_name += "_2x60"
 
     if hidden_60x2 == 2:
-        model.add(Dense(60, kernel_initializer='normal', activation=activation_func))
         model.add(Dense(60, kernel_initializer='normal', activation=activation_func))
         model.add(Dense(60, kernel_initializer='normal', activation=activation_func))
         model.add(Dropout(0.5))
@@ -151,7 +149,7 @@ if __name__ == '__main__':
             ('numericals', Pipeline([
                 ('selector', TypeSelector(np.number)),
                 ('scaler', StandardScaler()),
-                ('selectKbest', SelectKBest(f_regression, k="all")),
+                ('selectKbest', SelectKBest(f_regression, k=19)),  # k=19 for previous nn with 23input
 
                 # ('debug_bool', Debug()),
             ])),  # numericals close
@@ -186,16 +184,18 @@ if __name__ == '__main__':
     # interesting_plots(history)
     #
     # # -- Save the model
-    # model.save_weights('models/nn_{}_40_epochs.h5'.format(architecture_name))
+    # model.save_weights('models/nn_{}_40epochs.h5'.format(architecture_name))
 
     # -- Load the model
     # Best model: 30-60-60-30-1 Relu activation 40 epochs
     print("Loading the model...")
-    model, model_name = create_model(activation_func='relu', hidden_60x2=1)
-    model.load_weights('models/nn_{}_40_epochs.h5'.format(model_name))
+    model, model_name = create_model(input_dim_=23, activation_func='relu', hidden_60x2=1)
+    model.load_weights('models/nn_{}_40epochs.h5'.format(model_name))
 
     X_test = pipeline.transform(X_test)
 
+    # -- Run the model
+    print("Running the model...")
     results = model.evaluate(X_test, y_test)
 
     print('Loss: {} Accuracy: {} AUC: {}'.format(results[0], results[1], results[2]))
