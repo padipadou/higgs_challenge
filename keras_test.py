@@ -183,7 +183,7 @@ if __name__ == '__main__':
     # history = model.fit(X_train, y_train, validation_split=0.2, epochs=40, batch_size=50, verbose=1)
     #
     # # -- Plot
-    # # interesting_plots(history)
+    # interesting_plots(history)
     #
     # # -- Save the model
     # model.save_weights('models/nn_{}_40_epochs.h5'.format(architecture_name))
@@ -191,8 +191,7 @@ if __name__ == '__main__':
     # -- Load the model
     # Best model: 30-60-60-30-1 Relu activation 40 epochs
     print("Loading the model...")
-    model, model_name = create_model(activation_func='relu',hidden_60x2=1)
-
+    model, model_name = create_model(activation_func='relu', hidden_60x2=1)
     model.load_weights('models/nn_{}_40_epochs.h5'.format(model_name))
 
     X_test = pipeline.transform(X_test)
