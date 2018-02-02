@@ -1,8 +1,8 @@
 # higgs\_challenge
-The goal is to explore the potential of advanced ML methods to improve the discovery significance of the experiment. No knowledge of particle physics is required. Using simulated data with features characterizing events detected by ATLAS, your task is to classify events into "tau tau decay of a Higgs boson" versus "background." 
+The goal is to explore the potential of advanced ML methods to improve the discovery significance of the experiment. No knowledge of particle physics is required. Using simulated data with features characterizing events detected by ATLAS, your task is to classify events into "tau tau decay of a Higgs boson" versus "background."
 
 # 1. Files
-* **data**: 
+* **data**:
 
 "training.csv"
 
@@ -22,7 +22,7 @@ The goal is to explore the potential of advanced ML methods to improve the disco
 
 * **documentation**:
 
-"higgs\_challenge\_report.pdf": **REPORT ABOUT OUR WORK** 
+"higgs\_challenge\_report.pdf": **REPORT ABOUT OUR WORK**
 
 "HiggsBosonMLChallenge.pdf"
 
@@ -48,6 +48,8 @@ repertory "models" for neural networks from *Keras*
 
 `python3 descriptive_analysis.py`
 
+First steps to study the data.
+
 *Information*: For testing just uncomment a piece of code
 
 We put everything in comments to avoid that everything is printed at the same time
@@ -55,6 +57,10 @@ We put everything in comments to avoid that everything is printed at the same ti
 * **grid\_search\_pipeline.py**
 
 `python3 grid_search_pipeline.py`
+
+Gridsearch using a preprocessing pipeline and one model can be chosen.
+
+*Information*: When choosing one model to test, adapt the grid search parameter for this model
 
 *Information*: For testing just uncomment a piece of code
 
@@ -64,6 +70,8 @@ We put everything in comments to avoid that everything is printed at the same ti
 
 `python3 time_measurement_best_models.py`
 
+Measures the execution time of the training for the models with their 'best' configuration obtained by the gridsearch.
+
 *Information*: For testing just uncomment a piece of code
 
 We put everything in comments to avoid that everything is printed at the same time
@@ -72,6 +80,8 @@ We put everything in comments to avoid that everything is printed at the same ti
 
 `python3 tpot_test.py`
 
+Using the new library tpot, which is automatically determining best model and hyperparameters
+
 *Information*: For testing just uncomment a piece of code
 
 We put everything in comments to avoid that everything is printed at the same time
@@ -79,6 +89,8 @@ We put everything in comments to avoid that everything is printed at the same ti
 * **keras\_test.py**
 
 `python3 keras_test.py`
+
+Applying neural networks
 
 *Information*: For testing just uncomment a piece of code
 
