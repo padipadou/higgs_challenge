@@ -1,7 +1,7 @@
-# higgs_challenge
+# higgs\_challenge
 The goal is to explore the potential of advanced ML methods to improve the discovery significance of the experiment. No knowledge of particle physics is required. Using simulated data with features characterizing events detected by ATLAS, your task is to classify events into "tau tau decay of a Higgs boson" versus "background." 
 
-# 1. Files:
+# 1. Files
 * **data**: 
 
 "training.csv"
@@ -35,7 +35,7 @@ repertory "models" for neural networks from *Keras*
 
 "requirements.txt" for required packages
 
-# 2. Required packages:
+# 2. Required packages
 * On error type: "ImportError: No module named 'module\_name'"
 
 `sudo pip3 install -r requirements.txt`
@@ -44,8 +44,8 @@ repertory "models" for neural networks from *Keras*
 
 `export PYTHONPATH=$PYTHONPATH:/path_from_root_to_directory/higgs_challenge`
 
-# 3. Run something:
-## descriptive\_analysis.py
+# 3. Run something
+* **descriptive\_analysis.py**
 
 `python3 descriptive_analysis.py`
 
@@ -53,7 +53,7 @@ repertory "models" for neural networks from *Keras*
 
 We put everything in comments to avoid that everything is printed at the same time
 
-## grid\_search\_pipeline.py
+* **grid\_search\_pipeline.py**
 
 `python3 grid_search_pipeline.py`
 
@@ -61,7 +61,7 @@ We put everything in comments to avoid that everything is printed at the same ti
 
 We put everything in comments to avoid that everything is printed at the same time
 
-## time\_measurement\_best\_models.py
+* **time\_measurement\_best\_models.py**
 
 `python3 time_measurement_best_models.py`
 
@@ -69,7 +69,7 @@ We put everything in comments to avoid that everything is printed at the same ti
 
 We put everything in comments to avoid that everything is printed at the same time
 
-## tpot\_test.py
+* **tpot\_test.py**
 
 `python3 tpot_test.py`
 
@@ -77,7 +77,7 @@ We put everything in comments to avoid that everything is printed at the same ti
 
 We put everything in comments to avoid that everything is printed at the same time
 
-## keras\_test.py
+* **keras\_test.py**
 
 `python3 keras_test.py`
 
