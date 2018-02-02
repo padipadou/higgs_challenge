@@ -6,7 +6,6 @@ The goal is to explore the potential of advanced ML methods to improve the disco
 
 "training.csv"
 
----
 * **code**:
 
 "descriptive\_analysis.py"
@@ -21,14 +20,12 @@ The goal is to explore the potential of advanced ML methods to improve the disco
 
 "utility.py"
 
----
 * **documentation**:
 
 "README.md"
 
 "HiggsBosonMLChallenge.pdf"
 
----
 * **others**:
 
 repertory "models" for neural networks from *Keras*
