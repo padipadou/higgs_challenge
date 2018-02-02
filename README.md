@@ -22,9 +22,11 @@ The goal is to explore the potential of advanced ML methods to improve the disco
 
 * **documentation**:
 
-"README.md"
+"higgs\_challenge\_report.pdf": **/!\ REPORT ABOUT OUR WORK /!\** 
 
 "HiggsBosonMLChallenge.pdf"
+
+"README.md"
 
 * **others**:
 
