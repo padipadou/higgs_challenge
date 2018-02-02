@@ -30,7 +30,7 @@ The goal is to explore the potential of advanced ML methods to improve the disco
 
 * **others**:
 
-repertory "models" for neural networks from *Keras*
+directory "models" for neural networks from *Keras*
 
 "requirements.txt" for required packages
 
